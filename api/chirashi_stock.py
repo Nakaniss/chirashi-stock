@@ -2,12 +2,12 @@
 # get_json_app/views.pyで呼び出されます。
 
 # スクレイピングの処理
-from scraping import chirashi_exists
-from scraping import getlink_viewpage
-from scraping import getlink_image
+from api.scraping import chirashi_exists
+from api.scraping import getlink_viewpage
+from api.scraping import getlink_image
 
 # データ型定義
-from Models import Chirashi  # チラシ
+from api.Models import Chirashi  # チラシ
 
 
 def getjson_chirashi(shopid):

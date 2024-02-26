@@ -2,9 +2,9 @@ from fastapi import FastAPI
 
 # from fastapi.middleware.cors import CORSMiddleware
 
-from chirashi_stock import getjson_chirashi
+from api.chirashi_stock import getjson_chirashi
 
-from Models import PostRequest
+from api.Models import PostRequest
 
 
 app = FastAPI()
