@@ -9,7 +9,7 @@ function Home() {
 
   async function sendMessage() {
     try {
-      const response = await fetch("/api/getjson/chirashi", {
+      const response = await fetch("/api/getchirashi", {
         method: "POST",
         body: JSON.stringify({ shopid }), // Send shopid in the request
         headers: {
