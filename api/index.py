@@ -2,7 +2,23 @@ from fastapi import FastAPI
 
 # from fastapi.middleware.cors import CORSMiddleware
 
-from api.chirashi_stock import getjson_chirashi
+import sys
+import logging
+
+logging.warning(f"sys.path:{sys.path}")
+try:
+    from api.chirashi_stock import getjson_chirashi
+except Exception as e:
+    logging.warning(f"error1:{e}")
+    try:
+        from chirashi_stock import getjson_chirashi
+    except Exception as e:
+        logging.warning(f"error2:{e}")
+        try:
+            from .chirashi_stock import getjson_chirashi
+        except Exception as e:
+            logging.warning(f"error3:{e}")
+            raise e
 
 from api.Models import PostRequest
 
