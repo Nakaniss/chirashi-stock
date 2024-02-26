@@ -23,11 +23,11 @@ const nextConfig = {
             ? "http://127.0.0.1:8000/openapi.json"
             : "/api/openapi.json",
       },
-      {
-        images: {
-          domains: ["image.tokubai.co.jp"],
-        },
-      },
+      // {
+      //   images: {
+      //     domains: ["image.tokubai.co.jp"],
+      //   },
+      // },
     ];
   },
 };
