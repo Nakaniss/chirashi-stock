@@ -21,7 +21,9 @@ function Home() {
         const data = await response.json();
         setResponseData(data.response); // Store the response data
       } else {
-        throw new Error("Something went wrong");
+        const errorData = await response.text();
+        console.error("Error response:", errorData);
+        throw new Error(errorData);
       }
     } catch (error) {
       console.error("Error:", error);
