@@ -1,7 +1,8 @@
-from fastapi import FastAPI
-import requests
 import re
+
+import requests
 from bs4 import BeautifulSoup
+from fastapi import FastAPI
 from pydantic import BaseModel
 
 
@@ -37,9 +38,7 @@ def getlink_viewpage(url):
     # https://tokubai.co.jp/{店舗名}/{shopid}
     html = get_html(url)
     atags = html.find_all("a", target="_blank")  # target="_blank"のaタグを取得
-    filtered_atags = [
-        tag for tag in atags if "チラシ" in tag.text
-    ]  # "チラシ"を含むaタグ
+    filtered_atags = [tag for tag in atags if "チラシ" in tag.text]  # "チラシ"を含むaタグ
     href_viewpage = filtered_atags[0].get("href")  # hrefを取得
     link_viewpage = "https://tokubai.co.jp" + str(href_viewpage)
 
@@ -52,7 +51,7 @@ def getlink_image(url):
     # https://tokubai.co.jp/{店舗名}/{shopid}/leaflets/58985279?from=leaflet_navigation&origin_shop_id={shopid}
 
     # テスト
-    # url = 'https://tokubai.co.jp/%E3%82%B3%E3%83%BC%E3%83%97%E3%81%95%E3%81%A3%E3%81%BD%E3%82%8D/7626/leaflets/58985279'
+    # url = 'https://tokubai.co.jp/コープさっぽろ/7626/leaflets/60997248?from=leaflet_navigation&origin_shop_id=7626'
 
     html = get_html(url)
     elems_container = html.find_all(
@@ -66,34 +65,24 @@ def getlink_image(url):
 
         if other_leaflet_link:
             href = other_leaflet_link.get("href")  # hrefタグ（＝URLの後半）を取得
-            url = (
-                "https://tokubai.co.jp" + href
-            )  # URLを結合し、[チラシを選択した状態のURL]を取得
+            url = "https://tokubai.co.jp" + href  # URLを結合し、[チラシを選択した状態のURL]を取得
             html = get_html(url)  # チラシのページをインスタンス化
-            chirashi = html.find(
-                "img", class_="leaflet"
-            )  # [チラシを選択した状態のURL]にアクセスして、imageタグ(=フルURLがある)を取得
+            chirashi = html.find("img", class_="leaflet")  # [チラシを選択した状態のURL]にアクセスして、imageタグ(=フルURLがある)を取得
 
             if chirashi:
                 link_image = chirashi.get("src")  # imgタグ内のsrcからフルURLを取得
-                img = other_leaflet_link.find(
-                    "img"
-                )  # imgタグ（alt=チラシの期間,class,src）を取得
+                img = other_leaflet_link.find("img")  # imgタグ（alt=チラシの期間,class,src）を取得
                 alt = img.get("alt")  # imgタグから、altタグ（=チラシの期間）を取得
 
                 # container_titleタグ(=チラシ名)がある場合に取得
                 try:
-                    container_title = other_leaflet_link.find(
-                        "div", class_="container_title"
-                    ).text()
+                    container_title = other_leaflet_link.find("div", class_="container_title").text()
                     container_title = str(container_title)
                 except Exception:
                     container_title = ""
 
                 # 末尾に、link_imageの末尾番号を追加
-                chirashi_index = re.findall(r"\d+$", link_image)[
-                    0
-                ]  # findallはlistで返すので注意
+                chirashi_index = re.findall(r"\d+$", link_image)[0]  # findallはlistで返すので注意
                 chirashi_name = f"{alt} {container_title}[{chirashi_index}]"
                 list_chirashi.append([chirashi_name, link_image])
 
@@ -110,9 +99,7 @@ def getjson_chirashi(shopid):
     # チラシが存在する場合の処理
     # スクレイピング
     link_viewpage = getlink_viewpage(url)
-    links_image = getlink_image(
-        link_viewpage
-    )  # [['チラシ名', '画像リンク'],･･･]のリストで返す
+    links_image = getlink_image(link_viewpage)  # [['チラシ名', '画像リンク'],･･･]のリストで返す
 
     chirashi_json = {}
     for link_image in links_image:
