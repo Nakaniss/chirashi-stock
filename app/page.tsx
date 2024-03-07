@@ -1,17 +1,23 @@
 "use client";
 
+import DownloadButton from "@/components/utils/DownloadButton";
+import SearchButton from "@/components/utils/SearchButton";
 import Image from "next/image";
 import React, { useState } from "react";
 
 function Home() {
+  // サーバーからのレスポンスデータを保持するstate
   const [responseData, setResponseData] = useState(null);
-  const [shopid, setShopid] = useState(""); // State for shopid input
+  // shopidの入力用state
+  const [shopid, setShopid] = useState("");
 
+  // 検索ボタンをクリックしたときの処理
   async function sendMessage() {
+    //shopidを送信して、APIからデータを取得する
     try {
       const response = await fetch("/api/getchirashi", {
         method: "POST",
-        body: JSON.stringify({ shopid }), // Send shopid in the request
+        body: JSON.stringify({ shopid }), // shopidをAPIに送信
         headers: {
           "Content-Type": "application/json",
         },
@@ -19,7 +25,7 @@ function Home() {
 
       if (response.ok) {
         const data = await response.json();
-        setResponseData(data.response); // Store the response data
+        setResponseData(data.response); // responseを保持
       } else {
         const errorData = await response.text();
         console.error("Error response:", errorData);
@@ -43,13 +49,24 @@ function Home() {
             onChange={(e) => setShopid(e.target.value)}
             className="w-full px-4 py-2 rounded-md bg-gray-800 text-white focus:outline-none focus:ring focus:border-blue-300"
           />
-          {/* 検索ボタン */}
-          <button
-            onClick={sendMessage}
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300"
-          >
-            検索
-          </button>
+
+          {/* start buttons */}
+          <div className="flex flex-row justify-between">
+            {/* 検索ボタン */}
+            <div>
+              <SearchButton onClick={sendMessage} />
+            </div>
+            <div>
+              {/* 一括ダウンロードボタン */}
+              {responseData && (
+                <div>
+                  <DownloadButton />
+                </div>
+              )}
+            </div>
+          </div>
+          {/* end buttons */}
+
           {/* 画像表示 */}
           {responseData && (
             <div>
