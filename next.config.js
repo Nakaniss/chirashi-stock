@@ -1,7 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["image.tokubai.co.jp"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "image.tokubai.co.jp",
+      },
+    ],
   },
   rewrites: async () => {
     return [
